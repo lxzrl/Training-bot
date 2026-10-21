@@ -10,6 +10,10 @@ ENV_FILE="$APP_DIR/.env"
 SRC_DIR="$(cd "$(dirname "$0")" && pwd)"
 XRAY_DIR="$APP_DIR/xray"
 VPN_PORT=10818
+# Keep in sync with DEFAULT_FREE_MODELS in config.py.
+FREE_MODELS="google/gemma-4-31b-it:free,nvidia/nemotron-3-ultra-550b-a55b:free,minimax/minimax-m3.1-flash:free,openrouter/free"
+# Defaults from older versions whose models OpenRouter has withdrawn.
+DEAD_DEFAULT_MODELS=("openai/gpt-oss-120b:free")
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "Запусти через sudo: sudo bash $0"
@@ -77,7 +81,7 @@ setup() {
         *)
             set_env AI_PROVIDER openai
             set_env OPENAI_BASE_URL https://openrouter.ai/api/v1
-            set_env OPENAI_MODEL openai/gpt-oss-120b:free
+            set_env OPENAI_MODEL "$FREE_MODELS"
             set_env OPENAI_API_KEY "$API_KEY"
             echo "   ✓ OpenRouter (бесплатные модели)" ;;
     esac
@@ -209,6 +213,13 @@ elif [ "${1:-}" = "--setup" ]; then
 elif [ "${1:-}" = "--vpn" ]; then
     setup_vpn
 fi
+
+for dead in "${DEAD_DEFAULT_MODELS[@]}"; do
+    if grep -qx "OPENAI_MODEL=$dead" "$ENV_FILE"; then
+        set_env OPENAI_MODEL "$FREE_MODELS"
+        echo ">>> Модель $dead больше не бесплатная — переключаю на новый список бесплатных моделей"
+    fi
+done
 
 echo ">>> Ставлю зависимости Python (пару минут)…"
 python3 -m venv "$APP_DIR/venv"

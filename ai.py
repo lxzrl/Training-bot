@@ -136,12 +136,38 @@ def _translate(e: Exception) -> AIError:
     return AIError("Не получилось связаться с нейросетью, попробуй чуть позже.")
 
 
-async def check_connection() -> str:
-    try:
-        await _client().models.list()
-    except (anthropic.APIError, openai.APIError) as e:
-        raise _translate(e) from e
-    return f"✅ Связь с нейросетью есть: {provider_name()}"
+def _error_detail(e: Exception) -> str:
+    if isinstance(e, (anthropic.APIStatusError, openai.APIStatusError)):
+        body = e.body.get("error", e.body) if isinstance(e.body, dict) else e.body
+        message = body.get("message", body) if isinstance(body, dict) else body
+        return f"{e.status_code}: {message}"[:200]
+    return type(e).__name__
+
+
+async def check_models() -> list[tuple[str, bool, str]]:
+    """Send a tiny real request to every configured model: (model, works, detail)."""
+    content = "Ответь одним словом: работаю"
+    if config.AI_PROVIDER == "claude":
+        try:
+            response = await _client().messages.create(model=config.CLAUDE_MODEL, max_tokens=1000,
+                                                       output_config={"effort": "low"},
+                                                       messages=[{"role": "user", "content": content}])
+        except anthropic.APIError as e:
+            return [(config.CLAUDE_MODEL, False, _error_detail(e))]
+        return [(config.CLAUDE_MODEL, response.stop_reason != "refusal", response.stop_reason)]
+
+    results = []
+    for model in config.OPENAI_MODELS:
+        try:
+            response = await _client().chat.completions.create(
+                model=model, max_tokens=1000, messages=[{"role": "user", "content": content}])
+        except openai.APIError as e:
+            results.append((model, False, _error_detail(e)))
+            continue
+        answered = bool(response.choices and response.choices[0].message.content)
+        # openrouter/free reports which model actually answered.
+        results.append((model, answered, response.model if answered else "пустой ответ"))
+    return results
 
 
 # ---------- Claude ----------

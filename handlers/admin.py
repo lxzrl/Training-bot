@@ -59,10 +59,22 @@ def check_kb() -> InlineKeyboardMarkup:
 
 
 async def report_check(message: Message):
+    wait = await message.answer("Отправляю пробный запрос каждой модели… ⏳")
     try:
-        await message.answer(await ai.check_connection())
+        results = await ai.check_models()
     except ai.AIError as e:
-        await message.answer(f"❌ {e}\nПодробности — в логах: <code>journalctl -u fitbot -n 50</code>")
+        await wait.edit_text(f"❌ {e}")
+        return
+    lines = ["<b>Проверка нейросети</b>", ""]
+    for model, works, detail in results:
+        mark = "✅" if works else "❌"
+        lines.append(f"{mark} <code>{escape(model)}</code>\n    {escape(detail)}")
+    if any(works for _, works, _ in results):
+        lines += ["", "Нейросеть работает: бот берёт первую модель из списка, которая отвечает."]
+    else:
+        lines += ["", "Ни одна модель не ответила. Если ошибка связи — проверь VPN/прокси; "
+                      "если 404 — модель убрали, поменяй OPENAI_MODEL в <code>/opt/fitbot/.env</code>."]
+    await wait.edit_text("\n".join(lines))
 
 
 @router.message(Command("proxy"))

@@ -16,8 +16,12 @@ AI_PROVIDER = os.getenv("AI_PROVIDER", "openai").strip().lower()
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-opus-5-5")
 OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://openrouter.ai/api/v1")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+# Free OpenRouter models get withdrawn without notice, so keep a chain;
+# "openrouter/free" picks any free model that is up and goes last as a safety net.
+DEFAULT_FREE_MODELS = ("google/gemma-4-31b-it:free,nvidia/nemotron-3-ultra-550b-a55b:free,"
+                       "minimax/minimax-m3.1-flash:free,openrouter/free")
 # Several models separated by commas: if one is unavailable, the next is tried.
-OPENAI_MODELS = [m.strip() for m in os.getenv("OPENAI_MODEL", "openai/gpt-oss-120b:free").split(",") if m.strip()]
+OPENAI_MODELS = [m.strip() for m in os.getenv("OPENAI_MODEL", DEFAULT_FREE_MODELS).split(",") if m.strip()]
 # Comma-separated Telegram user IDs; empty means anyone can use the bot.
 ALLOWED_USERS = {int(x) for x in os.getenv("ALLOWED_USERS", "").replace(" ", "").split(",") if x}
 TIMEZONE = ZoneInfo(os.getenv("TIMEZONE", "Europe/Moscow"))
