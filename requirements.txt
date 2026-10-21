@@ -1,0 +1,6 @@
+aiogram==3.31.0
+anthropic==2.0.0
+openai==3.36.0
+python-dotenv>=1.0
+socksio>=1.0
+tzdata
