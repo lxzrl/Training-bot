@@ -32,7 +32,7 @@ Telegram-бот, который составляет программу трен
 ### 2. Установка на сервер
 
 ```bash
-git clone https://github.com/GITHUB_USER/Training-bot.git
+git clone https://github.com/lxzrl/Training-bot.git
 sudo bash Training-bot/install.sh      # первый раз создаст /opt/fitbot/.env и остановится
 nano /opt/fitbot/.env                  # впиши токен, ключ и свой Telegram ID
 sudo bash Training-bot/install.sh      # установит зависимости и запустит бота
