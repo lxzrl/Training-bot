@@ -24,7 +24,7 @@ HELP = """<b>🛡 Прокси / VPN для нейросети</b>
 Подходят http://, https:// и socks5://
 Выключить: <code>/proxy off</code>
 
-Если у тебя VPN на VLESS, WireGuard или Outline, запусти на сервере его клиент с локальным socks5-портом (например, Xray на 127.0.0.1:10808) и укажи <code>/proxy socks5://127.0.0.1:10808</code>"""
+VPN на VLESS настраивается на сервере одной командой: <code>sudo bash install.sh --vpn</code>. После этого прокси здесь будет <code>socks5://127.0.0.1:10818</code>"""
 
 
 def is_admin(uid: int) -> bool:
