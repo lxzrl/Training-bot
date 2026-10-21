@@ -41,7 +41,7 @@ setup() {
     echo
 
     while true; do
-        ask BOT_TOKEN "1/3. Токен бота от @BotFather: " secret
+        ask BOT_TOKEN "1/4. Токен бота от @BotFather: " secret
         if [[ ! "$BOT_TOKEN" =~ ^[0-9]+:[A-Za-z0-9_-]{30,}$ ]]; then
             echo "   Не похоже на токен. Он выглядит так: 123456789:AAH...xyz"
             continue
@@ -59,7 +59,7 @@ setup() {
     done
 
     while true; do
-        ask API_KEY "2/3. Ключ нейросети (OpenRouter sk-or-..., Groq gsk_... или Claude sk-ant-...): " secret
+        ask API_KEY "2/4. Ключ нейросети (OpenRouter sk-or-..., Groq gsk_... или Claude sk-ant-...): " secret
         [ -n "$API_KEY" ] && break
         echo "   Ключ не может быть пустым."
     done
@@ -83,18 +83,18 @@ setup() {
     esac
 
     while true; do
-        ask ADMIN_ID "3/3. Твой Telegram ID (узнать: напиши @userinfobot): "
+        ask ADMIN_ID "3/4. Твой Telegram ID (узнать: напиши @userinfobot): "
         [[ "$ADMIN_ID" =~ ^[0-9]+$ ]] && break
         echo "   ID — это только цифры, например 123456789."
     done
 
-    ask FRIENDS "Необязательно: ID друзей через запятую (Enter — бот будет открыт всем): "
+    ask FRIENDS "   Необязательно: ID друзей через запятую (Enter — бот будет открыт всем): "
     set_env BOT_TOKEN "$BOT_TOKEN"
     set_env ADMIN_ID "$ADMIN_ID"
     set_env ALLOWED_USERS "$FRIENDS"
+    setup_vpn
     echo
     echo "✓ Настройки сохранены в $ENV_FILE"
-    setup_vpn
 }
 
 install_xray() {
@@ -126,9 +126,8 @@ forget_bot_proxy() {
 
 setup_vpn() {
     echo
-    echo "=== VPN для нейросети (VLESS) ==="
     echo "Через VPN пойдут только запросы к нейросети, Telegram работает напрямую."
-    ask VLESS_LINK "Ссылка vless://... (Enter — без VPN): " secret
+    ask VLESS_LINK "4/4. VLESS-ссылка vless://... (Enter — без VPN): " secret
     if [ -z "$VLESS_LINK" ]; then
         echo "   Без VPN."
         return 0

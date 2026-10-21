@@ -37,18 +37,16 @@ git clone https://github.com/lxzrl/Training-bot.git
 sudo bash Training-bot/install.sh
 ```
 
-Скрипт сам спросит три вещи — токен бота, ключ нейросети и твой Telegram ID — и по желанию ID друзей:
+Скрипт сам спросит четыре вещи — токен бота, ключ нейросети, твой Telegram ID и VLESS-ссылку для VPN (её можно пропустить):
 
 ```
-1/3. Токен бота от @BotFather: ••••••
+1/4. Токен бота от @BotFather: ••••••
    ✓ Бот найден: @my_fit_bot
-2/3. Ключ нейросети (OpenRouter sk-or-..., Groq gsk_... или Claude sk-ant-...): ••••••
+2/4. Ключ нейросети (OpenRouter sk-or-..., Groq gsk_... или Claude sk-ant-...): ••••••
    ✓ OpenRouter (бесплатные модели)
-3/3. Твой Telegram ID (узнать: напиши @userinfobot): 123456789
-Необязательно: ID друзей через запятую (Enter — бот будет открыт всем):
-
-=== VPN для нейросети (VLESS) ===
-Ссылка vless://... (Enter — без VPN): ••••••
+3/4. Твой Telegram ID (узнать: напиши @userinfobot): 123456789
+   Необязательно: ID друзей через запятую (Enter — бот будет открыт всем): 111,222
+4/4. VLESS-ссылка vless://... (Enter — без VPN): ••••••
    ✓ VPN работает, внешний IP: 203.0.113.7
 ```
 
