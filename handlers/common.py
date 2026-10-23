@@ -36,7 +36,7 @@ async def start(message: Message, state: FSMContext):
     await state.clear()
     user = db.get_user(message.from_user.id)
     if user:
-        await message.answer(f"С возвращением, {escape(user['name'])}! 💪", reply_markup=main_menu())
+        await message.answer(f"Привет, {escape(user['name'])}! 💪\n\n{HELP}", reply_markup=main_menu())
         return
     await message.answer("Привет! Я твой персональный тренер 🏋️\n\n"
                          "Задам несколько вопросов — и составлю программу тренировок и КБЖУ под твою цель. "
